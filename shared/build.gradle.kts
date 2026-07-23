@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
+
 kotlin {
     listOf(
         iosArm64(),
