@@ -8,6 +8,7 @@ import org.muslim_voice.project.core.data.UserPreferencesRepository
 import org.muslim_voice.project.core.data.repository.AuthRepositoryImpl
 import org.muslim_voice.project.core.domain.repository.AuthRepository
 import org.muslim_voice.project.features.auth.login.viewModel.LoginViewModel
+import org.muslim_voice.project.features.auth.otpScreen.OtpViewModel
 import org.muslim_voice.project.features.auth.register.RegisterLaunchHolder
 import org.muslim_voice.project.features.auth.register.viewModel.RegisterViewModel
 import org.muslim_voice.project.features.groupDashboard.viewModel.GroupDashboardViewModel
@@ -23,13 +24,14 @@ val appModule = module {
     includes(dataModule)
     single { AppNavigator() }
     single { UserPreferencesRepository() }
-    single<AuthRepository> { AuthRepositoryImpl() }
+    single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<GoogleSignInController> { createGoogleSignInController() }
     single { RegisterLaunchHolder() }
     viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
     viewModel { LoginViewModel(get(), get(), get()) }
-    viewModel { RegisterViewModel(get(), get()) }
+    viewModel { RegisterViewModel(get(), get(), get()) }
+    viewModel { OtpViewModel(get()) }
     viewModel { GroupDashboardViewModel() }
     viewModel { NotificationsHistoryViewModel() }
     viewModel { SelectLanViewModel() }

@@ -4,5 +4,4 @@ enum class RegisterStep {
     PERSONAL_INFO,
     PRAYER_VOICES,
     PROFILE_PICTURE,
-    VERIFICATION,
 }

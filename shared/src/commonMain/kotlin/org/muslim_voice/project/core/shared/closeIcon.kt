@@ -13,7 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import org.muslim_voice.project.core.utiltis.sdp
+import org.muslim_voice.project.core.utilities.sdp
 
 @Composable
 fun closeIcon(

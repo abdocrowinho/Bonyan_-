@@ -7,4 +7,6 @@ sealed interface LoginEvent {
     data object NavigateToRegister : LoginEvent
     data class NavigateToRegisterWithGoogleAccount(val account: GoogleAccountInfo) : LoginEvent
     data class ShowError(val message: String) : LoginEvent
+    data class ValidationError(val errors: Map<String, List<String>>) : LoginEvent
+
 }

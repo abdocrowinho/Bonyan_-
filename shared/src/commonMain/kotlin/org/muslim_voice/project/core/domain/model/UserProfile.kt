@@ -2,6 +2,7 @@ package org.muslim_voice.project.core.domain.model
 
 import kotlinx.datetime.LocalDate
 import org.muslim_voice.project.core.auth.GoogleAccountInfo
+import org.muslim_voice.project.core.constants.PrayerType
 
 data class UserProfile(
     val firstName: String,
@@ -14,6 +15,7 @@ data class UserProfile(
     val email: String,
     val password: String? = null,
     val googleAccount: GoogleAccountInfo? = null,
+    val prayerVoicePaths: Map<PrayerType, String>,
     val profileImageBytes: ByteArray?,
 ) {
     override fun equals(other: Any?): Boolean {
@@ -30,6 +32,7 @@ data class UserProfile(
             email == other.email &&
             password == other.password &&
             googleAccount == other.googleAccount &&
+            prayerVoicePaths == other.prayerVoicePaths &&
             profileImageBytes.contentEquals(other.profileImageBytes)
     }
 
@@ -44,6 +47,7 @@ data class UserProfile(
         result = 31 * result + email.hashCode()
         result = 31 * result + (password?.hashCode() ?: 0)
         result = 31 * result + (googleAccount?.hashCode() ?: 0)
+        result = 31 * result + prayerVoicePaths.hashCode()
         result = 31 * result + (profileImageBytes?.contentHashCode() ?: 0)
         return result
     }

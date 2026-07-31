@@ -4,14 +4,18 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.muslim_voice.project.core.auth.GoogleSignInController
 import org.muslim_voice.project.core.data.UserPreferencesRepository
-import org.muslim_voice.project.core.domain.repository.AuthRepository
+import org.muslim_voice.project.core.domain.model.auth.login.request.LoginRequestModel
+import org.muslim_voice.project.core.domain.usecase.LoginUseCase
+import org.muslim_voice.project.core.domain.util.ApiResult
+import org.muslim_voice.project.core.domain.util.NetworkError
 import org.muslim_voice.project.core.mvi.BaseViewModel
+import org.muslim_voice.project.core.utilities.toUiText
 import org.muslim_voice.project.features.auth.login.event.LoginEvent
 import org.muslim_voice.project.features.auth.login.intent.LoginIntent
 import org.muslim_voice.project.features.auth.login.state.LoginState
 
 class LoginViewModel(
-    private val authRepository: AuthRepository,
+    private val loginUseCase: LoginUseCase,
     private val userPreferencesRepository: UserPreferencesRepository,
     private val googleSignInController: GoogleSignInController,
 ) : BaseViewModel<LoginState, LoginIntent, LoginEvent>(LoginState()) {
@@ -35,27 +39,35 @@ class LoginViewModel(
     private fun loginWithEmail() {
         val email = currentState().email.trim()
         val password = currentState().password
-        val emailError = validateEmail(email)
-        val passwordError = if (password.isBlank()) "كلمة المرور مطلوبة" else null
-
-        if (emailError != null || passwordError != null) {
-            updateState {
-                it.copy(emailError = emailError, passwordError = passwordError)
-            }
-            return
-        }
 
         viewModelScope.launch {
-            updateState { it.copy(isLoading = true) }
-            authRepository.login(email, password)
-                .onSuccess { token ->
-                    userPreferencesRepository.setSessionToken(token)
-                    sendEvent(LoginEvent.NavigateToHome)
+            loginUseCase(LoginRequestModel(email = email, password = password))
+                .collect { result ->
+                    when (result) {
+                        ApiResult.Loading -> updateState {
+                            it.copy(isLoading = true, emailError = null, passwordError = null)
+                        }
+                        is ApiResult.Success -> {
+                            userPreferencesRepository.setSessionToken(result.data?.token)
+                            updateState { it.copy(isLoading = false) }
+                            sendEvent(LoginEvent.NavigateToHome)
+                        }
+                        is ApiResult.Failure -> {
+                            updateState { it.copy(isLoading = false) }
+                            when(result.error){
+                                is NetworkError.ValidationError -> {
+                                    sendEvent(LoginEvent.ValidationError(result.error.errors))
+
+                                }
+                                else -> {
+                                    sendEvent(LoginEvent.ShowError(result.error.toUiText()))
+
+                                }
+                            }
+
+                        }
+                    }
                 }
-                .onFailure { error ->
-                    sendEvent(LoginEvent.ShowError(error.message ?: "فشل تسجيل الدخول"))
-                }
-            updateState { it.copy(isLoading = false) }
         }
     }
 
@@ -65,24 +77,15 @@ class LoginViewModel(
             runCatching { googleSignInController.signIn() }
                 .onSuccess { account ->
                     if (account == null) {
-                        sendEvent(LoginEvent.ShowError("تم إلغاء تسجيل الدخول عبر Google"))
-                    } else if (authRepository.hasCompletedProfile(account)) {
-                        userPreferencesRepository.setSessionToken(account.idToken)
-                        sendEvent(LoginEvent.NavigateToHome)
+                        sendEvent(LoginEvent.ShowError("Google sign-in was cancelled"))
                     } else {
                         sendEvent(LoginEvent.NavigateToRegisterWithGoogleAccount(account))
                     }
                 }
                 .onFailure { error ->
-                    sendEvent(LoginEvent.ShowError(error.message ?: "فشل تسجيل الدخول عبر Google"))
+                    sendEvent(LoginEvent.ShowError(error.message ?: "Google sign-in failed"))
                 }
             updateState { it.copy(isGoogleLoading = false) }
         }
-    }
-
-    private fun validateEmail(email: String): String? {
-        if (email.isBlank()) return "البريد الإلكتروني مطلوب"
-        val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$")
-        return if (emailRegex.matches(email)) null else "البريد الإلكتروني غير صالح"
     }
 }

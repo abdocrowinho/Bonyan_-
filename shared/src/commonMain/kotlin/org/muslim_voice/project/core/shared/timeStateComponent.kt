@@ -15,8 +15,8 @@
 //import androidx.compose.ui.unit.dp
 //import com.dodeal.features.dashboard.ui.components.getTimeColor
 //import com.dodeal.features.shared.texts.CustomText
-//import org.muslim_voice.project.core.utiltis.sdp
-//import org.muslim_voice.project.core.utiltis.ssp
+//import org.muslim_voice.project.core.utilities.sdp
+//import org.muslim_voice.project.core.utilities.ssp
 //
 //@Composable
 //fun TimeStateContainer(time: String){

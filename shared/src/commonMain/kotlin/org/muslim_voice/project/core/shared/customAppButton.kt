@@ -23,9 +23,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import org.muslim_voice.project.core.utiltis.onHover
-import org.muslim_voice.project.core.utiltis.sdp
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.onHover
+import org.muslim_voice.project.core.utilities.sdp
+import org.muslim_voice.project.core.utilities.ssp
 
 enum class AppButtonType {
     PRIMARY,

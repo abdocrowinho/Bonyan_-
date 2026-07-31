@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.dodeal.features.shared.InputFieldState
-import org.muslim_voice.project.core.utiltis.onHover
-import org.muslim_voice.project.core.utiltis.sdp
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.onHover
+import org.muslim_voice.project.core.utilities.sdp
+import org.muslim_voice.project.core.utilities.ssp
 import org.muslim_voice.project.generated.resources.*
 import org.jetbrains.compose.resources.painterResource
 

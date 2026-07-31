@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
-import org.muslim_voice.project.core.utiltis.onHover
-import org.muslim_voice.project.core.utiltis.sdp
+import org.muslim_voice.project.core.utilities.onHover
+import org.muslim_voice.project.core.utilities.sdp
 
 private val MenuWidth = 189
 private val MenuCorner = 8

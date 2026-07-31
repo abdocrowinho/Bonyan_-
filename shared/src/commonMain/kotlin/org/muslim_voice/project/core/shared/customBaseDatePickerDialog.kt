@@ -37,8 +37,8 @@
 //import androidx.compose.ui.window.DialogProperties
 //import com.dodeal.features.main.composables.BlurredBackground
 //import com.dodeal.theme.AppTheme
-//import org.muslim_voice.project.core.utiltis.sdp
-//import org.muslim_voice.project.core.utiltis.ssp
+//import org.muslim_voice.project.core.utilities.sdp
+//import org.muslim_voice.project.core.utilities.ssp
 //import com.dodeal.utiltis.themeCardSurface
 //import java.time.DayOfWeek
 //import java.time.LocalDate

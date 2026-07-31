@@ -29,8 +29,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
-import org.muslim_voice.project.core.utiltis.sdp
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.sdp
+import org.muslim_voice.project.core.utilities.ssp
 
 data class TabItem<T>(
     val title: String,

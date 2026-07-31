@@ -24,9 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import org.muslim_voice.project.core.component.AppButton
 import org.muslim_voice.project.core.component.IconPosition
-import org.muslim_voice.project.core.permission.rememberLocationPermissionController
 import org.muslim_voice.project.core.ui.theme.AppColors
-import org.muslim_voice.project.core.ui.theme.MuslimVoiceTheme
 import org.muslim_voice.project.features.pickLocationScreen.event.LocationPermissionEvent
 import org.muslim_voice.project.features.pickLocationScreen.intent.LocationPermissionIntent
 import org.muslim_voice.project.features.pickLocationScreen.ui_model.PermissionFeatureItem
@@ -40,7 +38,6 @@ fun LocationPermissionScreen(
     viewModel: LocationPermissionViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
-    val permissionController = rememberLocationPermissionController()
     val scope = rememberCoroutineScope()
 
     // React to one-shot events coming from the ViewModel
@@ -49,7 +46,7 @@ fun LocationPermissionScreen(
             when (event) {
                 LocationPermissionEvent.RequestSystemLocationPermission -> {
                     scope.launch {
-                        val status = permissionController.requestPermission()
+                        val status = ""
                         viewModel.handleIntent(LocationPermissionIntent.OnPermissionResult(status))
                     }
                 }
@@ -64,10 +61,8 @@ fun LocationPermissionScreen(
 
     // Skip this screen entirely if permission is already granted
     LaunchedEffect(Unit) {
-        val status = permissionController.getStatus()
-        if (status == org.muslim_voice.project.core.permission.PermissionStatus.GRANTED) {
-            viewModel.handleIntent(LocationPermissionIntent.OnPermissionResult(status))
-        }
+        val status = ""
+
     }
 
     LocationPermissionContent(

@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import kotlinx.coroutines.delay
 import org.koin.compose.viewmodel.koinViewModel
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.ssp
 import org.muslim_voice.project.features.splash.viewModel.SplashViewModel
 import org.muslim_voice.project.navigation.AppNavigator
 import org.muslim_voice.project.navigation.Screens

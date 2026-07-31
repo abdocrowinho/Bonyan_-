@@ -33,9 +33,9 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
 import org.muslim_voice.project.core.theme.VoiceOfMuslimColors
-import org.muslim_voice.project.core.utiltis.onHover
-import org.muslim_voice.project.core.utiltis.sdp
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.onHover
+import org.muslim_voice.project.core.utilities.sdp
+import org.muslim_voice.project.core.utilities.ssp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 

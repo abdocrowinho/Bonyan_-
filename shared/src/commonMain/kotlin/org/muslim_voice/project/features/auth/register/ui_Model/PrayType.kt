@@ -1,17 +1,12 @@
 package org.muslim_voice.project.features.auth.register.ui_Model
 
-enum class PrayType {
-    FAJR,
-    DHUHR,
-    ASR,
-    MAGHRIB,
-    ISHA,
-}
+import org.muslim_voice.project.core.constants.PrayerType
 
-fun PrayType.arabicLabel(): String = when (this) {
-    PrayType.FAJR -> "فجر"
-    PrayType.DHUHR -> "ظهر"
-    PrayType.ASR -> "عصر"
-    PrayType.MAGHRIB -> "مغرب"
-    PrayType.ISHA -> "عشاء"
+
+fun PrayerType .arabicLabel(): String = when (this) {
+    PrayerType.FAJR -> "فجر"
+    PrayerType.DHUHR -> "ظهر"
+    PrayerType.ASR -> "عصر"
+    PrayerType.MAGHRIB -> "مغرب"
+    PrayerType.ISHA -> "عشاء"
 }

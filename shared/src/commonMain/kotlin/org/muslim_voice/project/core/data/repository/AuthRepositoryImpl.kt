@@ -1,53 +1,49 @@
 package org.muslim_voice.project.core.data.repository
 
-import org.muslim_voice.project.core.auth.GoogleAccountInfo
-import org.muslim_voice.project.core.domain.model.UserProfile
+import kotlinx.coroutines.flow.Flow
+import org.muslim_voice.project.core.data.remote.api.AuthApiService
+import org.muslim_voice.project.core.data.remote.dto.auth.forget_password.response.ForgetPasswordDto
+import org.muslim_voice.project.core.data.remote.dto.auth.reset_password.request.ResetPasswordRequestDto
+import org.muslim_voice.project.core.data.remote.mapper.auth.loginMapper.request.toDto
+import org.muslim_voice.project.core.data.remote.mapper.auth.loginMapper.response.toDomain
+import org.muslim_voice.project.core.data.remote.mapper.auth.otpMapper.request.toDto
+import org.muslim_voice.project.core.data.remote.mapper.auth.otpMapper.response.toDomain
+import org.muslim_voice.project.core.data.remote.mapper.auth.registerMapper.request.toDto
+import org.muslim_voice.project.core.data.remote.mapper.auth.registerMapper.response.toDomain
+import org.muslim_voice.project.core.data.util.executeApi
+
+import org.muslim_voice.project.core.domain.model.auth.login.request.LoginRequestModel
+import org.muslim_voice.project.core.domain.model.auth.login.response.LoginModel
+import org.muslim_voice.project.core.domain.model.auth.otp.request.OtpRequestModel
+import org.muslim_voice.project.core.domain.model.auth.otp.response.OtpResponseModel
+import org.muslim_voice.project.core.domain.model.auth.register.request.RegisterRequestModel
+import org.muslim_voice.project.core.domain.model.auth.register.response.RegisterResponseModel
 import org.muslim_voice.project.core.domain.repository.AuthRepository
+import org.muslim_voice.project.core.domain.util.ApiResult
 
-class AuthRepositoryImpl : AuthRepository {
-    private val registeredEmails = mutableSetOf<String>()
-    private val completedProfiles = mutableSetOf<String>()
-    private val pendingCodes = mutableMapOf<String, String>()
-
-    override suspend fun login(email: String, password: String): Result<String> {
-        if (password.isBlank()) {
-            return Result.failure(IllegalArgumentException("كلمة المرور مطلوبة"))
-        }
-        registeredEmails.add(email.lowercase())
-        return Result.success("session_${email.lowercase()}")
-    }
-
-    override suspend fun hasCompletedProfile(email: String): Boolean {
-        return completedProfiles.contains(email.lowercase())
-    }
-
-    override suspend fun hasCompletedProfile(googleAccount: GoogleAccountInfo): Boolean {
-        return completedProfiles.contains(googleAccount.email.lowercase())
-    }
-
-    override suspend fun sendVerificationCode(email: String): Result<Unit> {
-        pendingCodes[email.lowercase()] = DEFAULT_VERIFICATION_CODE
-        return Result.success(Unit)
-    }
-
-    override suspend fun verifyCode(email: String, code: String): Result<Unit> {
-        val expected = pendingCodes[email.lowercase()]
-        return if (expected != null && expected == code.trim()) {
-            Result.success(Unit)
-        } else {
-            Result.failure(IllegalArgumentException("رمز التحقق غير صحيح"))
+class AuthRepositoryImpl(
+    private val authApiService: AuthApiService
+) : AuthRepository {
+    override fun register(request: RegisterRequestModel): Flow<ApiResult<RegisterResponseModel>> {
+        return executeApi {
+            authApiService.register(request.toDto()).toDomain()
         }
     }
 
-    override suspend fun submitProfile(profile: UserProfile): Result<String> {
-        val email = profile.email.lowercase()
-        registeredEmails.add(email)
-        completedProfiles.add(email)
-        pendingCodes.remove(email)
-        return Result.success("session_$email")
+    override fun login(request: LoginRequestModel): Flow<ApiResult<LoginModel>> {
+        return executeApi { authApiService.login(request.toDto()).data.toDomain()}
     }
 
-    private companion object {
-        const val DEFAULT_VERIFICATION_CODE = "123456"
+    override fun verifyOtp(request: OtpRequestModel): Flow<ApiResult<OtpResponseModel>> {
+        return executeApi { authApiService.verifyOtp(request.toDto()).data.toDomain()}
     }
+
+    override fun forgetPassword(request: ForgetPasswordDto): Flow<ApiResult<Unit>> {
+        return executeApi { authApiService.forgetPassword(request).data }
+    }
+
+    override fun resetPassword(request: ResetPasswordRequestDto): Flow<ApiResult<ForgetPasswordDto>> {
+        return executeApi { authApiService.resetPassword(request).data }
+    }
+
 }

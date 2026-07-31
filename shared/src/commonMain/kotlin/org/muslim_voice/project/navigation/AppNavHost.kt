@@ -5,7 +5,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import org.muslim_voice.project.features.auth.login.ui.LoginScreen
+import org.muslim_voice.project.features.auth.otpScreen.OtpScreen
 import org.muslim_voice.project.features.auth.register.ui.RegisterScreen
 import org.muslim_voice.project.features.locationPermission.ui.LocationPermissionScreen
 import org.muslim_voice.project.features.main.ui.MainHomeScreen
@@ -51,6 +53,13 @@ fun AppNavHost(
         }
         composable<Screens.Register> {
             RegisterScreen(navigator = navigator)
+        }
+        composable<Screens.Otp> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screens.Otp>()
+            OtpScreen(
+                email = route.email,
+                navigator = navigator,
+            )
         }
         composable<Screens.MainHomeScreen> {
             MainHomeScreen(navigator = navigator)

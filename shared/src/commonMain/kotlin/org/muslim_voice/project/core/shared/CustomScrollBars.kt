@@ -20,7 +20,7 @@
 //import androidx.compose.ui.input.pointer.pointerInput
 //import com.dodeal.theme.AppTheme
 //import org.muslim_voice.project.core.utiltis.pxToSdp
-//import org.muslim_voice.project.core.utiltis.sdp
+//import org.muslim_voice.project.core.utilities.sdp
 //
 //
 //@Composable

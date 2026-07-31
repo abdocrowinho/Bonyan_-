@@ -17,6 +17,9 @@ sealed class Screens {
     data object Register : Screens()
 
     @Serializable
+    data class Otp(val email: String) : Screens()
+
+    @Serializable
     data object SelectLan : Screens()
 
     @Serializable

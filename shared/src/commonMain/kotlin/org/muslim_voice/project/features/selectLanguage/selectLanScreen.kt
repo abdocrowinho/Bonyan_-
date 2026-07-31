@@ -33,8 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import org.koin.compose.viewmodel.koinViewModel
 import org.muslim_voice.project.core.component.AppButton
 import org.muslim_voice.project.core.ui.components.AppBackground
-import org.muslim_voice.project.core.utiltis.sdp
-import org.muslim_voice.project.core.utiltis.ssp
+import org.muslim_voice.project.core.utilities.sdp
+import org.muslim_voice.project.core.utilities.ssp
 import org.muslim_voice.project.features.selectLanguage.intent.SelectLanIntent
 import org.muslim_voice.project.features.selectLanguage.ui_Model.LanItem
 import org.muslim_voice.project.features.selectLanguage.viewModel.SelectLanViewModel

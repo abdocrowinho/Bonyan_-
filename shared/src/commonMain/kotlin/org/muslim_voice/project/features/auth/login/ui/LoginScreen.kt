@@ -19,7 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +41,8 @@ import org.muslim_voice.project.features.auth.register.RegisterLaunchHolder
 import org.muslim_voice.project.navigation.AppNavigator
 import org.muslim_voice.project.navigation.Screens
 import org.koin.compose.koinInject
+import org.muslim_voice.project.core.domain.validation.login.LoginFieldsConstants
+import org.muslim_voice.project.core.ui.components.ErrorDialog
 
 @Composable
 fun LoginScreen(
@@ -46,14 +50,27 @@ fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel<LoginViewModel>(),
     registerLaunchHolder: RegisterLaunchHolder = koinInject(),
 ) {
+
     val state by viewModel.state.collectAsState()
+
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var errorMessage by remember {
+        mutableStateOf<String?>(null)
+    }
+    var validationsErrors by remember { mutableStateOf<Map<String, List<String>?>?>(null) }
+
     rememberGoogleSignInController()
 
+
     LaunchedEffect(Unit) {
+
         viewModel.event.collect { event ->
+
             when (event) {
+
                 LoginEvent.NavigateToHome -> {
+
                     navigator.navigateToOuter(
                         route = Screens.MainHomeScreen,
                         popUpTo = Screens.Login,
@@ -61,32 +78,57 @@ fun LoginScreen(
                     )
                 }
 
+
                 LoginEvent.NavigateToRegister -> {
+
                     registerLaunchHolder.setGoogleAccount(null)
-                    navigator.navigateToOuter(Screens.Register)
+
+                    navigator.navigateToOuter(
+                        Screens.Register
+                    )
                 }
+
 
                 is LoginEvent.NavigateToRegisterWithGoogleAccount -> {
-                    registerLaunchHolder.setGoogleAccount(event.account)
-                    navigator.navigateToOuter(Screens.Register)
+
+                    registerLaunchHolder.setGoogleAccount(
+                        event.account
+                    )
+
+                    navigator.navigateToOuter(
+                        Screens.Register
+                    )
                 }
 
+
                 is LoginEvent.ShowError -> {
-                    snackbarHostState.showSnackbar(event.message)
+
+                    errorMessage = event.message
+                }
+
+                is LoginEvent.ValidationError -> {
+                    validationsErrors = event.errors
                 }
             }
         }
     }
 
+
+
     AppBackground {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp),
+
             horizontalAlignment = Alignment.CenterHorizontally,
+
             verticalArrangement = Arrangement.Center,
         ) {
+
+
             Text(
                 text = "تسجيل الدخول",
                 style = MaterialTheme.typography.headlineMedium,
@@ -94,67 +136,155 @@ fun LoginScreen(
                 color = AppColors.OnSurface,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
 
             AppTextField(
                 value = state.email,
-                onValueChange = { viewModel.handleIntent(LoginIntent.OnEmailChanged(it)) },
+
+                onValueChange = {
+                    viewModel.handleIntent(
+                        LoginIntent.OnEmailChanged(it)
+                    )
+                },
+
                 label = "البريد الإلكتروني",
-                errorMessage = state.emailError,
+
+                errorMessage = validationsErrors?.get(LoginFieldsConstants.EMAIL)?.firstOrNull(),
+
                 keyboardType = androidx.compose.ui.text.input.KeyboardType.Email,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
 
             AppTextField(
                 value = state.password,
-                onValueChange = { viewModel.handleIntent(LoginIntent.OnPasswordChanged(it)) },
+
+                onValueChange = {
+                    viewModel.handleIntent(
+                        LoginIntent.OnPasswordChanged(it)
+                    )
+                },
+
                 label = "كلمة المرور",
-                errorMessage = state.passwordError,
+
+                errorMessage =validationsErrors?.get(LoginFieldsConstants.PASSWORD)?.firstOrNull(),
+
                 isPassword = true,
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
 
             AppButton(
                 text = "تسجيل الدخول",
-                onClick = { viewModel.handleIntent(LoginIntent.OnLoginClicked) },
+
+                onClick = {
+                    viewModel.handleIntent(
+                        LoginIntent.OnLoginClicked
+                    )
+                },
+
                 isLoading = state.isLoading,
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
+
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = AppColors.Divider)
+
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = AppColors.Divider
+                )
+
+
                 Text(
                     text = "أو",
+
                     modifier = Modifier.padding(horizontal = 12.dp),
+
                     color = AppColors.Subtle,
+
                     textAlign = TextAlign.Center,
                 )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = AppColors.Divider)
+
+
+                HorizontalDivider(
+                    modifier = Modifier.weight(1f),
+                    color = AppColors.Divider
+                )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+
 
             AppButton(
                 text = "تسجيل الدخول عبر Google",
-                onClick = { viewModel.handleIntent(LoginIntent.OnGoogleSignInClicked) },
+
+                onClick = {
+                    viewModel.handleIntent(
+                        LoginIntent.OnGoogleSignInClicked
+                    )
+                },
+
                 isTransparent = true,
+
                 isLoading = state.isGoogleLoading,
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+
+            Spacer(
+                modifier = Modifier.height(12.dp)
+            )
+
 
             AppTextButton(
                 text = "إنشاء حساب جديد",
-                onClick = { viewModel.handleIntent(LoginIntent.OnNavigateToRegisterClicked) },
+
+                onClick = {
+                    viewModel.handleIntent(
+                        LoginIntent.OnNavigateToRegisterClicked
+                    )
+                },
             )
 
-            SnackbarHost(hostState = snackbarHostState)
+
+            SnackbarHost(
+                hostState = snackbarHostState
+            )
+        }
+
+
+        errorMessage?.let { message ->
+
+            ErrorDialog(
+                message = message,
+
+                onDismiss = {
+                    errorMessage = null
+                }
+            )
         }
     }
 }
